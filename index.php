@@ -8,7 +8,8 @@
 	<link href="libs/css/bootstrap.css" rel="stylesheet">
 	<script src="libs/js/jquery-3.3.1.js"></script>
 	<script src="libs/js/bootstrap.js"></script>
-<body>
+	<script src="public/js/script.js"></script>
+<body onload="Init()">
 	<nav class="navbar navbar-dark bg-dark menu">
 		<ul class="navbar-nav mr-auto">
 			<li class="nav-item">
