@@ -1,0 +1,39 @@
+html, body{
+	height: 100vh;
+}
+
+.fill-heigth{
+	height: calc(100vh - 40px);
+}
+
+.menu{
+	height: 40px;
+	padding: 0px 10px !important;
+	margin: 0px;
+}
+
+.panel-top{
+	height: 28px;
+}
+
+.panel-center{
+	margin-top: 5px;
+	height: calc(100% - 66px);
+}
+
+.panel-bottom{
+	margin-top: 5px;
+	height: 28px;
+}
+
+.list-group-item{
+	padding: 3px !important;
+}
+
+#left{
+
+}
+
+#right{
+
+}
