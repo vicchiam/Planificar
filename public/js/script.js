@@ -1,9 +1,20 @@
 function Init(){
 	loadCodes();
+
+	$("#centro").change(function(){
+		loadCodes();
+	})
+
+	$("#searchCode").click(function(){
+		alert("Buscar");
+	});
+
 }
 
 function loadCodes(){
-	$.post( "php/repartidor.php", { operacion:"getCodes", centro:"1", tipo:"1", oculto:0} ,function(data) {
+	var centro=$("#centro").val();
+
+	$.post( "php/repartidor.php", { operacion:"getCodes", centro: centro, tipo:"1", oculto:0} ,function(data) {
 		$("#codes").html("");
 		$.each(data, function( index, value ) {
 			

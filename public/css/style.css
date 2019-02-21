@@ -17,25 +17,34 @@ html, body{
 }
 
 .panel-top{
-	height: 28px;
+	height: 40px;
 }
 
 .panel-center{
 	margin-top: 5px;
-	height: calc(100% - 66px);
+	height: calc(100% - 90px);
 }
 
 .panel-bottom{
 	margin-top: 5px;
-	height: 28px;
+	height: 40px;
 }
 
 .list-group-item{
 	padding: 3px !important;	
 }
 
+.btn-img{
+	width: 24px;
+	cursor: pointer;
+}
+
 #left{
 
+}
+
+#left .panel-top select{
+	width: calc(100% - 32px);
 }
 
 #right{
