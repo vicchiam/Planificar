@@ -10,13 +10,7 @@
 	<script src="libs/js/bootstrap.js"></script>
 	<script src="public/js/script.js"></script>
 <body onload="Init()">
-	<nav class="navbar navbar-dark bg-dark menu">
-		<ul class="navbar-nav mr-auto">
-			<li class="nav-item">
-				<a class="nav-link" href="#">Home</a>
-			</li>
-		</ul> 
-	</nav>
+	<?php include_once("public/php/menu.php"); ?>
 	<div class="container-fluid">
 		<div class="row">
 			<div id="left" class="col-2 p-1 fill-heigth">

@@ -39,6 +39,11 @@ html, body{
 	cursor: pointer;
 }
 
+#masterLogo{
+    font-family: 'Shrikhand', cursive;
+    color: white;    
+}
+
 #left{
 
 }

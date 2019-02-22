@@ -2,11 +2,22 @@ function Init(){
 	loadCodes();
 
 	$("#centro").change(function(){
-		loadCodes();
+		loadCodes();		
 	})
 
-	$("#searchCode").click(function(){
-		alert("Buscar");
+	$("#searchCode").on('input',function(){				
+		var searched=$(this).val();		
+		if(searched.length>1){			
+			/*
+			$(".code-item").each(function(index, value){
+				var code = $(value).data("code")+"";				
+				if(code.startsWith(searched)){
+					var pos=29 * index;
+					$("#code-panel").scrollTop(pos);					
+				}				
+			});
+			*/
+		}
 	});
 
 }
@@ -20,13 +31,11 @@ function loadCodes(){
 			
 			var item=createCode(index, value);
 			$("#codes").append(item);
-
-			$(".code").click(function(){
+			$(".code-item").click(function(){
 				$(".active").removeClass("active");
 				$(this).addClass("active");
 			});
-
-		});
+		});		
 	},"json");
 }
 
@@ -34,7 +43,7 @@ function createCode(index,value){
 	var active="";
 	if(index==0)
 		active=" active ";
-	var item="<li class='list-group-item text-truncate pointer "+active+" code' data-code='"+value.codigo+"' data-orden='"+value.orden+"' title='"+value.descripcion+"'>";
+	var item="<li class='list-group-item text-truncate pointer code-item "+active+"' data-code='"+value.codigo+"' data-orden='"+value.orden+"' title='"+value.descripcion+"'>";
 	item+=value.codigo+"-"+value.descripcion;
 	item+="</li>";
 	return item;
