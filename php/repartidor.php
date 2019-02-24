@@ -10,5 +10,11 @@
 	if($operacion=="getCodes"){
 		echo Logic::getCodes();
 	}
+	else if($operacion=="getFamily"){
+		echo Ligic::getFamily();
+	}
+	else if($operacion=="changeVisibility"){
+		echo Logic::changeVisibility();
+	}
 
 ?>

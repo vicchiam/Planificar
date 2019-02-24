@@ -1,50 +1,112 @@
-function Init(){
+var list=null;
+var selectedCodes=null;
+
+function init(){
 	loadCodes();
+	changeVisibilityBtn();
 
 	$("#centro").change(function(){
-		loadCodes();		
-	})
+		renderList();		
+	});
+
+	$("#familia").change(function(){
+		renderList();		
+	});
+
+	$("#oculto").change(function(){
+		changeVisibilityBtn();
+		renderList();		
+	});
 
 	$("#searchCode").on('input',function(){				
-		var searched=$(this).val();		
-		if(searched.length>1){			
-			/*
-			$(".code-item").each(function(index, value){
-				var code = $(value).data("code")+"";				
-				if(code.startsWith(searched)){
-					var pos=29 * index;
-					$("#code-panel").scrollTop(pos);					
-				}				
-			});
-			*/
+		renderList();
+	});
+
+	$("#btn-lock-unlock").click(function(){
+		var value=$(this).data("lock");
+		var src="";
+		if(value==0){
+			value=1;
+			src="assets/lock-24px.svg";
+		}
+		else{
+			value=0;
+			src="assets/unlock-24px.svg";
+			selectedCodes.clean();
+			$(".selected-item").remove();
+		}
+		$(this).data("lock",value);
+		$(this).attr("src",src);
+	});
+
+	$("#btn-visibility").click(function(){
+		var code=$(".active:first").data("code");
+		var item=list.getCode(code);
+		if(typeof code !== "undefined"){
+			changeVisibility(item);
 		}
 	});
 
 }
 
+//Carga los datos de la bbdd
 function loadCodes(){
-	var centro=$("#centro").val();
-
-	$.post( "php/repartidor.php", { operacion:"getCodes", centro: centro, tipo:"1", oculto:0} ,function(data) {
-		$("#codes").html("");
-		$.each(data, function( index, value ) {
-			
-			var item=createCode(index, value);
-			$("#codes").append(item);
-			$(".code-item").click(function(){
-				$(".active").removeClass("active");
-				$(this).addClass("active");
-			});
-		});		
+	$.post( "php/repartidor.php", { operacion:"getCodes"} ,function(data) {
+		selectedCodes=new SelectedCodes("list-codes","item-selected");
+		list=new ListCodes("list-codes","item-code",data);
+		list.setClickItem(function(){
+			$(".active").removeClass("active");
+			$(this).addClass("active");
+			var code=$(this).data("code");
+			addSelectedItem(code);
+		})		
+		renderList();		
+		setActiveTop();
 	},"json");
+
 }
 
-function createCode(index,value){
-	var active="";
-	if(index==0)
-		active=" active ";
-	var item="<li class='list-group-item text-truncate pointer code-item "+active+"' data-code='"+value.codigo+"' data-orden='"+value.orden+"' title='"+value.descripcion+"'>";
-	item+=value.codigo+"-"+value.descripcion;
-	item+="</li>";
-	return item;
+function setActiveTop(){
+	$(".item-code:first").addClass("active");
+}
+
+//Dibuja la lista de codigos
+function renderList(){
+	var centro=$("#centro").val();
+	var oculto=$("#oculto").val();
+	var text=$("#searchCode").val();
+	list.render(centro,1,oculto,text);
+	selectedCodes.render();
+	$("#panel-list-codes").scrollTop(0);		
+}
+
+//Añade el codigo seleccionado a la lista de seleccionados si esta activo el boton
+function addSelectedItem(code){
+	if($("#btn-lock-unlock").data("lock")=="1"){		
+		var item=list.getCode(code);
+		if(item!=false){
+			var maxData=$("#num-data").val();
+			selectedCodes.add(item, maxData);		
+		}
+	}
+}
+
+function changeVisibilityBtn(){
+	var src="";
+	if($("#oculto").val()==0){
+		src="assets/visibility-24px.svg";		
+	}
+	else{
+		src="assets/visibility_off-24px.svg";
+	}
+	$("#btn-visibility").attr("src",src);
+}
+
+function changeVisibility(item){
+	$.post( "php/repartidor.php", { operacion:"changeVisibility", code: item.codigo} ,function(resp) {
+		if(resp=="ok"){
+			item.oculto=((item.oculto==0)?1:0);
+			$(".active:first").remove();
+		}
+	});
 }

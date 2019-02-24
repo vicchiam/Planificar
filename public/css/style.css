@@ -12,8 +12,9 @@ html, body{
 
 .menu{
 	height: 40px;
-	padding: 0px 10px !important;
+	padding: 5px 10px !important;
 	margin: 0px;
+	color: #fff;
 }
 
 .panel-top{

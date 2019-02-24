@@ -12,11 +12,18 @@
 		}
 
 		public static function getCodes(){
-			$centro=$_POST["centro"];
-			$tipo=$_POST["tipo"];
-			$oculto=$_POST["oculto"];
-			$codes=BD::getCodes($centro,$tipo,$oculto);								
+			$codes=BD::getCodes();								
 			return json_encode($codes);
+		}
+
+		public static function getFamilies(){
+			return BD::getFamilies();
+		}
+
+		public static function changeVisibility(){
+			$code=$_POST["code"];
+			$res=BD::changeVisibility($code);
+			return (($res)?"ok":$res);
 		}
 
 	}

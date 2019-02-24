@@ -1,17 +1,26 @@
-<nav class="navbar navbar-dark bg-dark menu">
-	<a class="navbar-brand" id="masterLogo" href="#">
+<nav class="bg-dark menu">
+	<span id="masterLogo">
 		PLANIFICAR
-	</a>
-	<div class="ml-2 mr-2">
-		<select class="custom-select" id="centro">
+	</span>
+	<div class="ml-4 mr-2 d-inline-block">
+		Centro:
+		<select id="centro">
+			<option value="0">*</option>
 			<option value="1">Picassent</option>
 			<option value="2">Merca</option>
 			<option value="3">Teruel</option>
+		</select>		
+	</div>
+	<div class="ml-2 mr-2 d-inline-block">
+		Ocultos:
+		<select id="oculto">
+			<option value="0">No</option>
+			<option value="1">Si</option>
 		</select>
 	</div>
-	<ul class="navbar-nav mr-auto">
-		<li class="nav-item">
-			<a class="nav-link" href="#">Home</a>
-		</li>
-	</ul> 	
+	<div class="ml-2 mr-2 d-inline-block">
+		Registros:
+		<input type="number" min="3" max="10" id="num-data" size="4" value="4"/>
+	</div>
+	
 </nav>

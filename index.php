@@ -8,8 +8,10 @@
 	<link href="libs/css/bootstrap.css" rel="stylesheet">
 	<script src="libs/js/jquery-3.3.1.js"></script>
 	<script src="libs/js/bootstrap.js"></script>
+	<script src="public/js/models/listCodes.js"></script>
+	<script src="public/js/models/selectedCodes.js"></script>
 	<script src="public/js/script.js"></script>
-<body onload="Init()">
+<body onload="init()">
 	<?php include_once("public/php/menu.php"); ?>
 	<div class="container-fluid">
 		<div class="row">

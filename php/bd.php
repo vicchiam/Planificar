@@ -26,15 +26,27 @@ class BD{
         return CONN::getOracle($sql);        
     }
 
-    public static function getCodes($centro,$tipo,$oculto){
-        $op="";
-        if(!empty($centro)){
-            $op.=" and centro=:centro ";
-        }
-        if(!empty($tipo)){
-            $op.=" and tipo=:tipo ";
-        }
+    public static function getFamilies(){
+        $sql="
+            select 
+                cuf_codigo_familia as CODIGO, 
+                cuf_denominacion as NOMBRE 
+            from 
+                pr_cu_familia 
+            where 
+                cuf_empresa=8 and 
+                cuf_clave=1 
+            order by 
+                cuf_denominacion
+        ";
+        return CONN::getOracle($sql);   
+    }
 
+    public static getStock($date){
+        
+    }
+
+    public static function getCodes(){
         $sql="
             select
                 codigo,
@@ -42,24 +54,32 @@ class BD{
                 familia,
                 centro,
                 tipo,
-                orden
+                orden,
+                oculto
             from
                 productos
-            where
-                oculto=:oculto 
-                ".$op."
             order by
                 orden
         ";        
         $db=CONN::getMySQL();
         $sth=$db->prepare($sql);
-        $sth->bindParam(":oculto",$oculto);
-        if(!empty($centro))
-            $sth->bindParam(":centro",$centro);
-        if(!empty($tipo))
-            $sth->bindParam(":tipo",$tipo);
         $sth->execute();
         return $sth->fetchAll();   
+    }
+
+    public static function changeVisibility($code){
+        $sql="
+            update productos set oculto=if(oculto=0,1,0) where codigo=:code
+        ";
+        try{
+            $db=CONN::getMySQL();
+            $sth=$db->prepare($sql);
+            $sth->bindParam(":code",$code);
+            return $sth->execute();
+        }
+        catch(PDOException $e) {            
+            return $e->getMessage();
+        }
     }
 
     public static function updateCodes($code){
@@ -93,6 +113,8 @@ class BD{
             return $e->getMessage();
         }
     }
+
+    
 
 
 }
