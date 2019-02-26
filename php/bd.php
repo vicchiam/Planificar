@@ -68,7 +68,8 @@ class BD{
                             mal_codigo_almacen=3 OR                         
                             (mal_codigo_almacen=5 and mal_codigo_ubicacion<>'49') OR
                             mal_codigo_almacen=14 OR
-                            mal_codigo_almacen=825                  
+                            mal_codigo_almacen=825 OR
+                            (mal_codigo_almacen=101 and mal_codigo_ubicacion='FINAL')                 
                         )                   
                         group by 
                             mal_codigo_producto
@@ -110,13 +111,12 @@ class BD{
         $sql="
             select
                 CODIGO,
-                SUM(KILOS) as CANTIDAD,
-                CONCAT('01','/',date_format(FECHA_FAC,'%m/%Y')) as DIA  
+                SUM(KILOS) as CANTIDAD
             from
                 export_xls2
             where
-                FECHA_FAC>=date_add(CONCAT(date_format('".$date."','%Y-%m'),'-01'),INTERVAL -1 MONTH) and
-                FECHA_FAC<CONCAT(date_format('".$date."','%Y-%m'),'-01') and
+                FECHA_FAC>=CONCAT(date_format(date_add('".$date."',INTERVAL -1 DAY),'%Y-%m'),'-01') and
+                FECHA_FAC<'".$date." and
                 Dia>=01 and
                 Dia<=31 and
                 CODIGO>=10000 and
@@ -142,38 +142,21 @@ class BD{
                     when 'BAN' then CONVERSION
                     else 1 
                     end
-                ) as CANTIDAD,
-                DIA
+                ) as CANTIDAD
             FROM
             (
-                select
-                    CODIGO,
-                    SUM(CANTIDAD) as CANTIDAD,
-                    CONCAT('01',CONCAT('/',CONCAT(lpad(MES,2,'0'),CONCAT('/',ANYO)))) as DIA
-                from
-                (
-                    select 
-                        of_codigo_producto as CODIGO,
-                        NVL(of_cantidad_fabricada,0) as CANTIDAD,
-                        to_char(of_fecha_finalizacion,'yyyy') as ANYO,
-                        to_char(of_fecha_finalizacion,'mm') as MES,
-                        to_char(of_fecha_finalizacion,'dd') as DIA,
-                        of_fecha_finalizacion
-                    from 
-                        fb_orden_fabricacion      
-                    where 
-                        of_empresa=8 and
-                        of_fecha_finalizacion>=CONCAT('01/',to_char((to_date('".$date."')-1),'mm/yyyy')) and       
-                        of_cantidad_fabricada>2
-                )
-                where
-                    DIA>=01 and
-                    DIA<=31 and
-                    of_fecha_finalizacion<'".$date."'
+                select 
+                    of_codigo_producto as CODIGO,
+                    sum(NVL(of_cantidad_fabricada,0)) as CANTIDAD
+                from 
+                    fb_orden_fabricacion      
+                where 
+                    of_empresa=8 and
+                    of_fecha_finalizacion>=CONCAT('01/',to_char((to_date('01/02/2019')-1),'mm/yyyy')) and  
+                    of_fecha_finalizacion<'01/02/2019' and    
+                    of_cantidad_fabricada>2
                 group by
-                    CODIGO,
-                    ANYO,
-                    MES
+                    of_codigo_producto
             ),
             (            
                 select 
