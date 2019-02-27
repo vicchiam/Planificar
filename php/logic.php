@@ -5,44 +5,47 @@
 	class Logic{
 
 		public static function update(){
-			$date="01/02/2019";
+			$date="01/12/2018";
+			$dateMySQL=self::dateToMySQL($date);
 			$codigos=array();
 			$stocks=BD::getStocks($date);
-			$sales=BD::getSales($date);
+			$sales=BD::getSales($dateMySQL);			
 			$productions=BD::getProductions($date);
 
 			foreach ($stocks as $s){
-				if(!isset($codigos[$s["CODIGO"]])){
-					$codigos[$s["CODIGO"]]=array("codigo"=>$codigos["CODIGO"],"fecha"=>$date,"stock"=>$s["CANTIDAD"],"venta"=>"","produccion"="");
+				$key=$s["CODIGO"];
+				if(!isset($codigos[$key])){
+					$codigos[$key]=array("codigo"=>$s["CODIGO"],"fecha"=>$dateMySQL,"stock"=>"","venta"=>"","produccion"=>"");
 				}
-				$s["CODIGO"]["stock"]=$s["CANTIDAD"];
+				$codigos[$key]["stock"]=$s["CANTIDAD"];
 			}
-
+			
 			foreach ($sales as $s){
-				if(!isset($codigos[$s["CODIGO"]])){
-					$codigos[$s["CODIGO"]]=array("codigo"=>$codigos["CODIGO"],"fecha"=>$date,"stock"=>"","venta"=>$s["CANTIDAD"],"produccion"="");
+				$key=$s["CODIGO"];
+				if(!isset($codigos[$key])){
+					$codigos[$key]=array("codigo"=>$s["CODIGO"],"fecha"=>$dateMySQL,"stock"=>"","venta"=>"","produccion"=>"");
 				}
-				$s["CODIGO"]["venta"]=$s["CANTIDAD"];
+				$codigos[$key]["venta"]=$s["CANTIDAD"];
 			}
-
+						
 			foreach ($productions as $p){
-				if(!isset($codigos[$p["CODIGO"]])){
-					$codigos[$p["CODIGO"]]=array("codigo"=>$codigos["CODIGO"],"fecha"=>$date,"stock"=>"","venta"=>"","produccion"=$p["CANTIDAD"]);
+				$key=$p["CODIGO"];
+				if(!isset($codigos[$key])){
+					$codigos[$p["CODIGO"]]=array("codigo"=>$s["CODIGO"],"fecha"=>$dateMySQL,"stock"=>"","venta"=>"","produccion"=>"");
 				}
-				$s["CODIGO"]["produccion"]=$s["CANTIDAD"];
+				$codigos[$key]["produccion"]=$p["CANTIDAD"];
 			}		
 
 			foreach ($codigos as $key=>$value) {
-				$res=BD::insertData($value["codigo"],$value["fecha"],$value["stock"],$value["venta"],$value["produccion"]);
-				echo $res;		
+				BD::updateData($value);
 			}			
-
+			
 		}
 
-		public static function updateCodes(){
+		public static function updateCode(){
 			$codes=BD::getCodesOracle();
 			foreach($codes as $c){				
-				BD::updateCodes($c);
+				BD::updateCode($c);
 			}
 		}
 
@@ -59,6 +62,29 @@
 			$code=$_POST["code"];
 			$res=BD::changeVisibility($code);
 			return (($res)?"ok":$res);
+		}
+
+		public static function dateToMySQL($date){
+			return date_format(date_create_from_format("d/m/Y",$date),"Y-m-d");
+		}
+
+		public static function getData(){
+			$codes=$_POST["codes"];
+			$date=$_POST["date"];
+			$data=BD::getData($codes,$date);
+			$res=array();
+			foreach ($data as $d) {
+				$key=$d["codigo"];
+				if(!isset($res[$key])){
+					$res[$key]=array();
+				}
+				$fecha=$d["fecha"];
+				if(!isset($res[$key][$fecha])){
+					$res[$key][$fecha]=array();
+				}
+				$res[$key][$fecha]=array("stock"=>$d["stock"],"ventas"=>$d["ventas"],"produccion"=>$d["produccion"]);
+			}
+			return json_encode($res);
 		}
 
 	}

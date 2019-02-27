@@ -10,8 +10,10 @@
 	echo "Init";
 
 	//$res=BD::getCodesOracle();
-	$res=BD::getCodes("","",0);
+	//$res=BD::getCodes("","",0);
 
-	echo var_dump($res);
+	//echo var_dump($res);
+
+	Logic::update();
 
 ?>

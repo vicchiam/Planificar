@@ -107,7 +107,7 @@ class BD{
         return CONN::getOracle($sql);
     }
 
-    public static function getSales($date){
+    public static function getSales($date){        
         $sql="
             select
                 CODIGO,
@@ -116,7 +116,7 @@ class BD{
                 export_xls2
             where
                 FECHA_FAC>=CONCAT(date_format(date_add('".$date."',INTERVAL -1 DAY),'%Y-%m'),'-01') and
-                FECHA_FAC<'".$date." and
+                FECHA_FAC<'".$date."' and
                 Dia>=01 and
                 Dia<=31 and
                 CODIGO>=10000 and
@@ -128,7 +128,7 @@ class BD{
         $db=CONN::getMySQL("estadisticas");
         $sth=$db->prepare($sql);
         $sth->execute();
-        return $sth->fetchAll();
+        return $sth->fetchAll(PDO::FETCH_ASSOC);
     }
 
     public static function getProductions($date){
@@ -152,8 +152,8 @@ class BD{
                     fb_orden_fabricacion      
                 where 
                     of_empresa=8 and
-                    of_fecha_finalizacion>=CONCAT('01/',to_char((to_date('01/02/2019')-1),'mm/yyyy')) and  
-                    of_fecha_finalizacion<'01/02/2019' and    
+                    of_fecha_finalizacion>=CONCAT('01/',to_char((to_date('".$date."')-1),'mm/yyyy')) and  
+                    of_fecha_finalizacion<'".$date."' and    
                     of_cantidad_fabricada>2
                 group by
                     of_codigo_producto
@@ -185,11 +185,12 @@ class BD{
                     )
             )
             where
-              CODIGO=CODIGO_CONV(+);
+              CODIGO=CODIGO_CONV(+)
         ";
         return CONN::getOracle($sql);
     }
 
+    /*
     public static function insertData($data){
         $sql="
             insert into datos (codigo,fecha,stock,ventas,produccion) values(:codigo,:fecha,:stock,:ventas,:produccion)
@@ -197,11 +198,32 @@ class BD{
         try{
             $db=CONN::getMySQL();
             $sth=$db->prepare($sql);
-            $sth->bindParam(":codigo",$data["CODIGO"]);
-            $sth->bindParam(":fecha",$data["FECHA"]);
-            $sth->bindParam(":stock",$data["STOCK"]);
-            $sth->bindParam(":ventas",$data["VENTAS"]);
-            $sth->bindParam(":produccion",$data["PRODUCCION"]);
+            $sth->bindParam(":codigo",$data["codigo"]);
+            $sth->bindParam(":fecha",$data["fecha"]);
+            $sth->bindParam(":stock",$data["stock"]);
+            $sth->bindParam(":ventas",$data["venta"]);
+            $sth->bindParam(":produccion",$data["produccion"]);
+            return $sth->execute();
+        }
+        catch(PDOException $e) {            
+            return $e->getMessage();
+        }
+    }
+    */
+
+    public static function updateData($data){
+        $sql="
+            insert into datos (codigo,fecha,stock,ventas,produccion) values(:codigo,:fecha,:stock,:ventas,:produccion)
+            on duplicate key update stock=:stock, ventas=:ventas, produccion=:produccion
+        ";
+        try{
+            $db=CONN::getMySQL();
+            $sth=$db->prepare($sql);
+            $sth->bindParam(":codigo",$data["codigo"]);
+            $sth->bindParam(":fecha",$data["fecha"]);
+            $sth->bindParam(":stock",$data["stock"]);
+            $sth->bindParam(":ventas",$data["venta"]);
+            $sth->bindParam(":produccion",$data["produccion"]);
             return $sth->execute();
         }
         catch(PDOException $e) {            
@@ -245,7 +267,7 @@ class BD{
         }
     }
 
-    public static function updateCodes($code){
+    public static function updateCode($code){
         $sql="
             insert into productos (codigo, descripcion, familia, centro, tipo, orden) 
             select 
@@ -278,6 +300,43 @@ class BD{
     }
 
     
+    public static function getData($codes,$date){
+        $or=array();
+        for($i=1;$i<=count($codes);$i++){
+            $or[]=" codigo=:code".$i." ";     
+        }
+        $op="(".join(" or ",$or).")";
 
+        $sql="
+            select
+                id,
+                fecha,
+                codigo,                
+                stock,
+                ventas,
+                produccion
+            from
+                datos
+            where
+                fecha<=:fecha and
+                ".$op."
+            order by                
+                codigo,
+                fecha
+        ";        
+        try{
+            $db=CONN::getMySQL();
+            $sth=$db->prepare($sql);
+            $sth->bindParam(":fecha",$date);
+            for($i=1;$i<=count($codes);$i++){
+                $sth->bindParam(":code".$i,$codes[($i-1)]);   
+            }
+            $sth->execute();
+            return $sth->fetchAll(PDO::FETCH_ASSOC);   
+        }
+        catch(PDOException $e) {            
+            return $e->getMessage();
+        }
+    }
 
 }

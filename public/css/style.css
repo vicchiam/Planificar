@@ -1,5 +1,6 @@
 html, body{
 	height: 100vh;
+	font-size: 11px; 
 }
 
 .fill-heigth{
@@ -11,24 +12,24 @@ html, body{
 }
 
 .menu{
-	height: 40px;
+	height: 32px;
 	padding: 5px 10px !important;
 	margin: 0px;
 	color: #fff;
 }
 
 .panel-top{
-	height: 40px;
+	height: 30px;
 }
 
 .panel-center{
 	margin-top: 5px;
-	height: calc(100% - 90px);
+	height: calc(100% - 64px);
 }
 
 .panel-bottom{
 	margin-top: 5px;
-	height: 40px;
+	height: 32px;
 }
 
 .list-group-item{
@@ -36,7 +37,7 @@ html, body{
 }
 
 .btn-img{
-	width: 24px;
+	width: 22px;
 	cursor: pointer;
 }
 

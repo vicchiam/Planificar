@@ -56,9 +56,8 @@ function loadCodes(){
 		list=new ListCodes("list-codes","item-code",data);
 		list.setClickItem(function(){
 			$(".active").removeClass("active");
-			$(this).addClass("active");
-			var code=$(this).data("code");
-			addSelectedItem(code);
+			$(this).addClass("active");			
+			selectedItem(this);
 		})		
 		renderList();		
 		setActiveTop();
@@ -80,15 +79,58 @@ function renderList(){
 	$("#panel-list-codes").scrollTop(0);		
 }
 
+function selectedItem(element){
+	if($("#btn-lock-unlock").data("lock")=="1"){		
+		var code=$(element).data("code");
+		addSelectedItem(code);
+	}	
+	else{
+		var codes=getSibiling(element);
+		loadData(codes);
+	}
+}
+
+function getSibiling(element){
+	var maxData=$("#num-data").val();
+	var num=((maxData-1)/2);
+	var numPrev=Math.floor(num);
+	var numNext=Math.round(num);	
+
+	var codes=[];
+
+	var prev=element;
+	var next=element;
+
+	for(var i=(numPrev-1);i>=0;i--){
+		prev=$(prev).prev();
+		var code=$(prev).data("code");
+		codes[i]=code;
+	}
+
+	var code=$(element).data("code");
+	codes.push(code);
+
+	for(var i=0;i<numNext;i++){
+		next=$(next).next();
+		var code=$(next).data("code");
+		codes.push(code);
+	}	
+	return codes;
+}
+
 //Añade el codigo seleccionado a la lista de seleccionados si esta activo el boton
 function addSelectedItem(code){
-	if($("#btn-lock-unlock").data("lock")=="1"){		
-		var item=list.getCode(code);
-		if(item!=false){
-			var maxData=$("#num-data").val();
-			selectedCodes.add(item, maxData);		
-		}
+	var item=list.getCode(code);
+	if(item!=false){
+		var maxData=$("#num-data").val();
+		selectedCodes.add(item, maxData);		
 	}
+}
+
+function loadData(codes){
+	$.post("php/repartidor.php", { operacion:"getData", codes: codes, date: '2019-02-01'} ,function(data) {
+		console.log(data);
+	});
 }
 
 function changeVisibilityBtn(){

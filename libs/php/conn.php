@@ -14,6 +14,7 @@
 	    }
 
 	    public static function getOracle($sql){
+	    	putenv("NLS_LANG=SPANISH_SPAIN.WE8MSWIN1252");
 	        $str=file_get_contents($_SERVER["DOCUMENT_ROOT"]."/Planificar/conf/conf.json");
 	        $cnf=json_decode($str,true);  
 	        $tns=$cnf["db_oracle"]["tns"];        

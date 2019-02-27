@@ -16,5 +16,8 @@
 	else if($operacion=="changeVisibility"){
 		echo Logic::changeVisibility();
 	}
+	else if($operacion=="getData"){
+		echo Logic::getData();
+	}
 
 ?>
