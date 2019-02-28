@@ -211,26 +211,6 @@ class BD{
     }
     */
 
-    public static function updateData($data){
-        $sql="
-            insert into datos (codigo,fecha,stock,ventas,produccion) values(:codigo,:fecha,:stock,:ventas,:produccion)
-            on duplicate key update stock=:stock, ventas=:ventas, produccion=:produccion
-        ";
-        try{
-            $db=CONN::getMySQL();
-            $sth=$db->prepare($sql);
-            $sth->bindParam(":codigo",$data["codigo"]);
-            $sth->bindParam(":fecha",$data["fecha"]);
-            $sth->bindParam(":stock",$data["stock"]);
-            $sth->bindParam(":ventas",$data["venta"]);
-            $sth->bindParam(":produccion",$data["produccion"]);
-            return $sth->execute();
-        }
-        catch(PDOException $e) {            
-            return $e->getMessage();
-        }
-    }
-
     public static function getCodes(){
         $sql="
             select
@@ -343,19 +323,24 @@ class BD{
      public static function getData($code,$date){
         $sql="
             select
-                id,
-                fecha,
-                codigo,                
-                stock,
-                ventas,
-                produccion
+                d.id,
+                d.fecha,
+                d.codigo,                
+                p.descripcion,
+                d.stock,
+                d.ventas,
+                d.produccion
             from
-                datos
+                productos p
+                left join
+                datos d
+                on
+                p.codigo=d.codigo
             where
-                codigo=:codigo and
-                fecha<=:fecha                
+                p.codigo=:codigo and
+                (d.fecha<=:fecha or d.fecha is null)                
             order by 
-                fecha
+                d.fecha
         ";        
         try{
             $db=CONN::getMySQL();
@@ -364,6 +349,26 @@ class BD{
             $sth->bindParam(":fecha",$date);
             $sth->execute();
             return $sth->fetchAll(PDO::FETCH_ASSOC);   
+        }
+        catch(PDOException $e) {            
+            return $e->getMessage();
+        }
+    }
+
+    public static function updateData($data){
+        $sql="
+            insert into datos (codigo,fecha,stock,ventas,produccion) values(:codigo,:fecha,:stock,:ventas,:produccion)
+            on duplicate key update stock=:stock, ventas=:ventas, produccion=:produccion
+        ";
+        try{
+            $db=CONN::getMySQL();
+            $sth=$db->prepare($sql);
+            $sth->bindParam(":codigo",$data["codigo"]);
+            $sth->bindParam(":fecha",$data["fecha"]);
+            $sth->bindParam(":stock",$data["stock"]);
+            $sth->bindParam(":ventas",$data["venta"]);
+            $sth->bindParam(":produccion",$data["produccion"]);
+            return $sth->execute();
         }
         catch(PDOException $e) {            
             return $e->getMessage();

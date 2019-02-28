@@ -49,6 +49,8 @@ function init(){
 
 }
 
+/***********PANEL LEFT***************************/
+
 //Carga los datos de la bbdd
 function loadCodes(){
 	$.post( "php/repartidor.php", { operacion:"getCodes"} ,function(data) {
@@ -127,11 +129,7 @@ function addSelectedItem(code){
 	}
 }
 
-function loadData(codes){
-	$.post("php/repartidor.php", { operacion:"getData", codes: codes, date: '2019-02-01'} ,function(data) {
-		var matrix=new Matrix("","",data);
-	},"json");
-}
+
 
 function changeVisibilityBtn(){
 	var src="";
@@ -151,4 +149,13 @@ function changeVisibility(item){
 			$(".active:first").remove();
 		}
 	});
+}
+
+/***********PANEL RIGHT***************************/
+
+function loadData(codes){
+	$.post("php/repartidor.php", { operacion:"getData", codes: codes, date: '2019-02-01'} ,function(data) {
+		var matrix=new Matrix("panel-data","",data);
+		matrix.render();
+	},"json");
 }

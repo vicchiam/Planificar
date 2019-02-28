@@ -5,7 +5,7 @@
 	error_reporting(E_ALL);
 
 	include_once "php/bd.php";
-	include_once "php/logic.php";
+	include_once "php/logica.php";
 
 	echo "Init";
 
@@ -14,6 +14,9 @@
 
 	//echo var_dump($res);
 
-	Logic::update();
+	//Logic::update();
+
+	$d=Logica::createDates("2019-02-01");
+	echo var_dump($d);
 
 ?>

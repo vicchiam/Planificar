@@ -2,7 +2,7 @@
 
 	include_once($_SERVER["DOCUMENT_ROOT"]."/Planificar/php/bd.php");
 
-	class Logic{
+	class Logica{
 
 		public static function update(){
 			$date="01/12/2018";
@@ -94,14 +94,29 @@
 			$date=$_POST["date"];
 			$res=array();
 			foreach ($codes as $code){
-				$bloque=array("codigo"=>$code,"fechas"=>array());
-				$fechas=BD::getData($code,$date);
-				foreach ($fechas as $fecha) {
-					$bloque["fechas"][]=$fecha;
+				$bloque=array("codigo"=>$code,"descripcion"=>"","fechas"=>self::createDates($date));
+				$data=BD::getData($code,$date);
+				foreach ($data as $d) {
+					if(empty($bloque["descripcion"])){
+						$bloque["descripcion"]=$d["descripcion"];
+					}
+					$key=$d["fecha"];
+					$bloque["fechas"][$key]=$d;
+
 				}
 				$res[]=$bloque;
 			}
 			return json_encode($res);			
+		}
+
+		public static function createDates($date){
+			$dates=array();
+			$dates[]=date('Y-m-d', strtotime($date." -1 month"));
+			$dates[]=date('Y-m-d', strtotime($date));
+			for($i=1;$i<=10;$i++){
+				$dates[]=date('Y-m-d', strtotime($date." +".$i." month"));
+			}
+			return $dates;
 		}
 
 	}
