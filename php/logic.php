@@ -68,6 +68,7 @@
 			return date_format(date_create_from_format("d/m/Y",$date),"Y-m-d");
 		}
 
+		/*
 		public static function getData(){
 			$codes=$_POST["codes"];
 			$date=$_POST["date"];
@@ -82,9 +83,25 @@
 				if(!isset($res[$key][$fecha])){
 					$res[$key][$fecha]=array();
 				}
-				$res[$key][$fecha]=array("stock"=>$d["stock"],"ventas"=>$d["ventas"],"produccion"=>$d["produccion"]);
+				$res[$key][$fecha]=array("stock"=>$d["stock"],"ventas"=>$d["ventas"],"produccion"=>$d["produccion"]);				
 			}
 			return json_encode($res);
+		}
+		*/
+
+		public static function getData(){
+			$codes=$_POST["codes"];
+			$date=$_POST["date"];
+			$res=array();
+			foreach ($codes as $code){
+				$bloque=array("codigo"=>$code,"fechas"=>array());
+				$fechas=BD::getData($code,$date);
+				foreach ($fechas as $fecha) {
+					$bloque["fechas"][]=$fecha;
+				}
+				$res[]=$bloque;
+			}
+			return json_encode($res);			
 		}
 
 	}

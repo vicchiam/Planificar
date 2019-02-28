@@ -299,7 +299,7 @@ class BD{
         }
     }
 
-    
+    /*
     public static function getData($codes,$date){
         $or=array();
         for($i=1;$i<=count($codes);$i++){
@@ -331,6 +331,37 @@ class BD{
             for($i=1;$i<=count($codes);$i++){
                 $sth->bindParam(":code".$i,$codes[($i-1)]);   
             }
+            $sth->execute();
+            return $sth->fetchAll(PDO::FETCH_ASSOC);   
+        }
+        catch(PDOException $e) {            
+            return $e->getMessage();
+        }
+    }
+    */
+
+     public static function getData($code,$date){
+        $sql="
+            select
+                id,
+                fecha,
+                codigo,                
+                stock,
+                ventas,
+                produccion
+            from
+                datos
+            where
+                codigo=:codigo and
+                fecha<=:fecha                
+            order by 
+                fecha
+        ";        
+        try{
+            $db=CONN::getMySQL();
+            $sth=$db->prepare($sql);
+            $sth->bindParam(":codigo",$code);
+            $sth->bindParam(":fecha",$date);
             $sth->execute();
             return $sth->fetchAll(PDO::FETCH_ASSOC);   
         }

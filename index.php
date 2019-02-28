@@ -10,6 +10,9 @@
 	<script src="libs/js/bootstrap.js"></script>
 	<script src="public/js/models/listCodes.js"></script>
 	<script src="public/js/models/selectedCodes.js"></script>
+	<script src="public/js/models/column.js"></script>
+	<script src="public/js/models/block.js"></script>
+	<script src="public/js/models/matrix.js"></script>
 	<script src="public/js/script.js"></script>
 <body onload="init()">
 	<?php include_once("public/php/menu.php"); ?>

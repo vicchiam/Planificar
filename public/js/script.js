@@ -129,8 +129,8 @@ function addSelectedItem(code){
 
 function loadData(codes){
 	$.post("php/repartidor.php", { operacion:"getData", codes: codes, date: '2019-02-01'} ,function(data) {
-		console.log(data);
-	});
+		var matrix=new Matrix("","",data);
+	},"json");
 }
 
 function changeVisibilityBtn(){
