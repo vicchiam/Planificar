@@ -68,56 +68,41 @@
 			return date_format(date_create_from_format("d/m/Y",$date),"Y-m-d");
 		}
 
-		/*
 		public static function getData(){
 			$codes=$_POST["codes"];
 			$date=$_POST["date"];
-			$data=BD::getData($codes,$date);
+			$dates=self::createDates($date);
 			$res=array();
-			foreach ($data as $d) {
-				$key=$d["codigo"];
-				if(!isset($res[$key])){
-					$res[$key]=array();
+			foreach ($codes as $code) {
+				$block=array("codigo"=>$code,"descripcion"=>"","fechas"=>self::createDates($date));
+				$data=BD::getData($code,$date);
+				foreach ($data as $d) {
+					if(empty($block["descripcion"])){
+						$block["descripcion"]=$d["descripcion"];
+					}
+					$key=$d["fecha"];
+					$block["fechas"][$key]=$d;
 				}
-				$fecha=$d["fecha"];
-				if(!isset($res[$key][$fecha])){
-					$res[$key][$fecha]=array();
-				}
-				$res[$key][$fecha]=array("stock"=>$d["stock"],"ventas"=>$d["ventas"],"produccion"=>$d["produccion"]);				
+				$res[]=$block;
 			}
 			return json_encode($res);
 		}
-		*/
-
-		public static function getData(){
-			$codes=$_POST["codes"];
-			$date=$_POST["date"];
-			$res=array();
-			foreach ($codes as $code){
-				$bloque=array("codigo"=>$code,"descripcion"=>"","fechas"=>self::createDates($date));
-				$data=BD::getData($code,$date);
-				foreach ($data as $d) {
-					if(empty($bloque["descripcion"])){
-						$bloque["descripcion"]=$d["descripcion"];
-					}
-					$key=$d["fecha"];
-					$bloque["fechas"][$key]=$d;
-
-				}
-				$res[]=$bloque;
-			}
-			return json_encode($res);			
-		}
 
 		public static function createDates($date){
-			$dates=array();
-			$dates[]=date('Y-m-d', strtotime($date." -1 month"));
-			$dates[]=date('Y-m-d', strtotime($date));
+			$first=date('Y-m-d', strtotime($date." -1 month"));
+			$current=date('Y-m-d', strtotime($date));
+
+			$dates[$first]=array();
+			$dates[$current]=array();
+
 			for($i=1;$i<=10;$i++){
-				$dates[]=date('Y-m-d', strtotime($date." +".$i." month"));
+				$aux=date('Y-m-d', strtotime($date." +".$i." month"));
+				$dates[$aux]=array();
 			}
 			return $dates;
 		}
+
+
 
 	}
 

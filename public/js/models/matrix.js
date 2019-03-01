@@ -1,7 +1,6 @@
 class Matrix{
 	
-	constructor(parent, className, data){
-		this.numCols=12;		
+	constructor(parent, className, data){			
 		this.parent=parent;
 		this.className=className;
 		this.data=data;
@@ -25,6 +24,7 @@ class Matrix{
 
 	createItem(){		
 		var trs=this.createItemBlocks();		
+		console.log(trs);
 		var table=$("<table/>",{
 			class:this.className
 		});
@@ -33,14 +33,12 @@ class Matrix{
 	}
 
 	createItemBlocks(){
-		var trs=[];
+		var trsTitle=[];		
 		for(var i=0;i<this.blocks.length;i++){
-			var aux=this.blocks[i].render(0);
-			trs=trs.concat(aux);
-			var aux=this.blocks[i].render(1);
-			trs=trs.concat(aux);
+			var block=this.blocks[i].renderTitle();				
+			trsTitle.push(block);
 		}
-		return trs;
+		return trsTitle;
 	}
 
 }
